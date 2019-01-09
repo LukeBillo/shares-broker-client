@@ -1,12 +1,13 @@
-﻿<Window x:Class="shares_broker_client.SharesWindow"
+﻿<Window x:Class="SharesBrokerClient.SharesWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:shares_broker_client"
+        xmlns:local="clr-namespace:SharesBrokerClient"
         mc:Ignorable="d"
-        Title="SharesWindow" Height="300" Width="300">
+        Title="SharesWindow" Height="370.265" Width="680.56">
     <Grid>
-        
+        <DataGrid x:Name="SharesGrid" HorizontalAlignment="Left" Height="243" Margin="10,34,0,0" VerticalAlignment="Top" Width="653" Loaded="SharesGrid_Loaded"/>
+
     </Grid>
 </Window>

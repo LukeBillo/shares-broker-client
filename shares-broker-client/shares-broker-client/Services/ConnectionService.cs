@@ -2,10 +2,11 @@
 using System.Net;
 using System.Threading.Tasks;
 using Flurl.Http;
-using shares_broker_client.Config;
-using shares_broker_client.Data;
+using SharesBrokerClient.Config;
+using SharesBrokerClient.Data;
+using SharesBrokerClient.Data.Models;
 
-namespace shares_broker_client.Services
+namespace SharesBrokerClient.Services
 {
     public class ConnectionService
     {
@@ -14,36 +15,52 @@ namespace shares_broker_client.Services
 
         private static readonly string HealthEndpoint = $"{Configuration.SharesWebServiceUrl}/health";
 
-        private ConnectionService() {}
+        public User ConnectedUser { get; private set; }
+        public ConnectionState ConnectionState { get; private set; }
 
-        public async Task<ConnectionStatus> Connect(string username, string password)
+        private ConnectionService()
+        {
+            ConnectionState = ConnectionState.NotConnected;
+        }
+
+        public async Task<ConnectionState> Connect(string username, string password)
         {
             try
             {
                 var response = await HealthEndpoint
                     .WithBasicAuth(username, password)
+                    .AllowHttpStatus(HttpStatusCode.Forbidden, HttpStatusCode.Unauthorized)
                     .GetAsync();
 
-                if (response.StatusCode == HttpStatusCode.OK)
-                    return ConnectionStatus.Connected;
-            }
-            catch (FlurlHttpException flurlHttpException)
-            {
-                var httpStatusCode = flurlHttpException.Call.HttpStatus.GetValueOrDefault();
-
-                switch (httpStatusCode)
+                switch (response.StatusCode)
                 {
+                    case HttpStatusCode.OK:
+                        ConnectedUser = new User { Username = username, Password = password };
+                        ConnectionState = ConnectionState.Connected;
+                        break;
                     case HttpStatusCode.Forbidden:
-                        return ConnectionStatus.Forbidden;
+                        ConnectionState = ConnectionState.Forbidden;
+                        break;
                     case HttpStatusCode.Unauthorized:
-                        return ConnectionStatus.Unauthorized;
+                        ConnectionState = ConnectionState.Unauthorized;
+                        break;
                     default:
-                        return ConnectionStatus.Unknown;
+                        // should not be possible
+                        ConnectionState = ConnectionState.Error;
+                        break;
                 }
             }
+            catch (FlurlHttpException)
+            {
+                ConnectionState = ConnectionState.Error;
+            }
 
-            // should never be reached.
-            return ConnectionStatus.Unknown;
+            return ConnectionState;
+        }
+
+        public void UpdateConnectionState(ConnectionState state)
+        {
+            ConnectionState = state;
         }
     }
 }

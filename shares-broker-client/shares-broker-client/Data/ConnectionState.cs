@@ -4,13 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace shares_broker_client.Data
+namespace SharesBrokerClient.Data
 {
-    public enum ConnectionStatus
+    public enum ConnectionState
     {
+        NotConnected,
         Connected,
         Unauthorized,
         Forbidden,
-        Unknown
+        Unreachable,
+        Error
     }
 }

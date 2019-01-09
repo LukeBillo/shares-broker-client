@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace shares_broker_client
+namespace SharesBrokerClient
 {
     /// <summary>
     /// Interaction logic for App.xaml

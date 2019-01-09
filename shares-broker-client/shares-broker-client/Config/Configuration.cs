@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace shares_broker_client.Config
+namespace SharesBrokerClient.Config
 {
     public class Configuration
     {

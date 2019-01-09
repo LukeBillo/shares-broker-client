@@ -1,8 +1,8 @@
 ﻿using System.Windows;
-using shares_broker_client.Data;
-using shares_broker_client.Services;
+using SharesBrokerClient.Data;
+using SharesBrokerClient.Services;
 
-namespace shares_broker_client
+namespace SharesBrokerClient
 {
     /// <summary>
     /// Interaction logic for LoginWindow.xaml
@@ -41,16 +41,16 @@ namespace shares_broker_client
 
             var connectionStatus = await _connectionService.Connect(username, password);
 
-            if (connectionStatus != ConnectionStatus.Connected)
+            if (connectionStatus != ConnectionState.Connected)
             {
                 switch (connectionStatus)
                 {
-                    case ConnectionStatus.Forbidden:
-                    case ConnectionStatus.Unauthorized:
+                    case ConnectionState.Forbidden:
+                    case ConnectionState.Unauthorized:
                         ShowErrorMessage("The username or password was incorrect.");
                         return;
                     default:
-                        ShowErrorMessage("An unknown error occurred. Please try again later.");
+                        ShowErrorMessage("An error has occurred. Please try again later.");
                         return;
                 }
             }

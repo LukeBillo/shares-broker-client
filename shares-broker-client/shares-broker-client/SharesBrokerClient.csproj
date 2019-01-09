@@ -6,13 +6,14 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{AE019F7C-F4C7-4060-AFA0-9E6B54ACFE60}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>shares_broker_client</RootNamespace>
-    <AssemblyName>shares-broker-client</AssemblyName>
+    <RootNamespace>SharesBrokerClient</RootNamespace>
+    <AssemblyName>SharesBrokerClient</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -25,7 +26,6 @@
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -50,7 +50,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>shares_broker_client.App</StartupObject>
+    <StartupObject>SharesBrokerClient.App</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Flurl, Version=2.8.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -83,7 +83,11 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Config\Configuration.cs" />
-    <Compile Include="Data\ConnectionStatus.cs" />
+    <Compile Include="Data\ConnectionState.cs" />
+    <Compile Include="Data\Models\CompanyShare.cs" />
+    <Compile Include="Data\Models\SharePrice.cs" />
+    <Compile Include="Data\Models\User.cs" />
+    <Compile Include="Services\SharesService.cs" />
     <Compile Include="SharesWindow.xaml.cs">
       <DependentUpon>SharesWindow.xaml</DependentUpon>
     </Compile>
@@ -123,6 +127,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <Compile Include="Data\Models\CompanyShareViewModel.cs" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
