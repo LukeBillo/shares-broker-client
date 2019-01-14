@@ -1,10 +1,11 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using SharesBrokerClient.Middleware;
+using SharesBrokerClient.Services;
 
 namespace SharesBrokerClient
 {
@@ -27,6 +28,11 @@ namespace SharesBrokerClient
             {
                 configuration.RootPath = "ClientApp/dist";
             });
+
+            // DI
+            services.AddSingleton(Configuration);
+            services.AddSingleton<SharesService>();
+            services.AddScoped<ConnectionService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -53,6 +59,7 @@ namespace SharesBrokerClient
                     template: "{controller}/{action=Index}/{id?}");
             });
 
+            app.UseMiddleware<BasicAuthMiddleware>();
             app.UseSpa(spa =>
             {
                 // To learn more about options for serving an Angular SPA from ASP.NET Core,
