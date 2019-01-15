@@ -7,22 +7,22 @@ using SharesBrokerClient.Services;
 
 namespace SharesBrokerClient.Middleware
 {
-    public class BasicAuthMiddleware : IMiddleware
+    public class BasicAuthMiddleware
     {
-        private readonly ConnectionService _connectionService;
+        private readonly RequestDelegate _next;
 
-        public BasicAuthMiddleware(ConnectionService connectionService)
+        public BasicAuthMiddleware(RequestDelegate next)
         {
-            _connectionService = connectionService;
+            _next = next;
         }
 
-        public async Task InvokeAsync(HttpContext context, RequestDelegate next)
+        public async Task InvokeAsync(HttpContext context, ConnectionService connectionService)
         {
             string authHeader = context.Request.Headers["Authorization"];
 
             if (string.IsNullOrEmpty(authHeader) || !authHeader.StartsWith("Basic"))
             {
-                context.Response.StatusCode = (int) HttpStatusCode.Unauthorized;
+                context.Response.Redirect("/login");
                 return;
             }
 
@@ -34,16 +34,16 @@ namespace SharesBrokerClient.Middleware
             var username = decodedHeader[0];
             var password = decodedHeader[1];
 
-            if (_connectionService.ConnectedUser != null)
+            if (connectionService.ConnectedUser != null)
             {
-                if (_connectionService.ConnectedUser.Username == username &&
-                    _connectionService.ConnectedUser.Password == password)
+                if (connectionService.ConnectedUser.Username == username &&
+                    connectionService.ConnectedUser.Password == password)
                 {
-                    await next.Invoke(context);
+                    await _next.Invoke(context);
                 }
             }
 
-            var connectionState = await _connectionService.Connect(username, password);
+            var connectionState = await connectionService.Connect(username, password);
 
             if (connectionState != ConnectionState.Connected)
             {
@@ -64,7 +64,7 @@ namespace SharesBrokerClient.Middleware
                 }
             }
 
-            await next.Invoke(context);
+            await _next.Invoke(context);
         }
     }
 }

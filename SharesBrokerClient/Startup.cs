@@ -30,7 +30,7 @@ namespace SharesBrokerClient
             });
 
             // DI
-            services.AddSingleton(Configuration);
+            services.AddSingleton<IConfiguration>(Configuration);
             services.AddSingleton<SharesService>();
             services.AddScoped<ConnectionService>();
         }
@@ -59,7 +59,13 @@ namespace SharesBrokerClient
                     template: "{controller}/{action=Index}/{id?}");
             });
 
-            app.UseMiddleware<BasicAuthMiddleware>();
+            app.MapWhen(
+                context => !context.Request.Path.StartsWithSegments("/login"),
+                config =>
+                {
+                    config.UseMiddleware<BasicAuthMiddleware>();
+                });
+
             app.UseSpa(spa =>
             {
                 // To learn more about options for serving an Angular SPA from ASP.NET Core,

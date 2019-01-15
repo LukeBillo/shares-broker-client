@@ -14,7 +14,7 @@ namespace SharesBrokerClient.Services
         private readonly ConnectionService _connectionService;
         private readonly User _user;
 
-        private SharesService(IConfiguration configuration, ConnectionService connectionService)
+        public SharesService(IConfiguration configuration, ConnectionService connectionService)
         {
             _connectionService = connectionService;
             _user = _connectionService.ConnectedUser;

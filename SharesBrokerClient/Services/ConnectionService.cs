@@ -14,7 +14,7 @@ namespace SharesBrokerClient.Services
         public User ConnectedUser { get; private set; }
         public ConnectionState ConnectionState { get; private set; }
 
-        private ConnectionService(IConfiguration configuration)
+        public ConnectionService(IConfiguration configuration)
         {
             HealthEndpoint = $"{configuration["Urls:SharesWebService"]}/health";
             ConnectionState = ConnectionState.NotConnected;
