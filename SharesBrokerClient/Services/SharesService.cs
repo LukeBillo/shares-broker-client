@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Net;
+using System.Threading.Tasks;
 using Flurl.Http;
 using Microsoft.Extensions.Configuration;
 using SharesBrokerClient.Data;
 using SharesBrokerClient.Data.Models;
+using System;
 
 namespace SharesBrokerClient.Services
 {
@@ -12,17 +14,17 @@ namespace SharesBrokerClient.Services
         public readonly string SharesEndpoint;
 
         private readonly ConnectionService _connectionService;
-        private readonly User _user;
+        private User _user;
 
         public SharesService(IConfiguration configuration, ConnectionService connectionService)
         {
             _connectionService = connectionService;
-            _user = _connectionService.ConnectedUser;
+            _connectionService.User.Subscribe(user => { _user = user; });
 
             SharesEndpoint = $"{configuration["Urls:SharesWebService"]}/shares";
         }
 
-        public List<CompanyShare> GetShares()
+        public async Task<List<CompanyShare>> GetShares()
         {
             try
             {
@@ -39,13 +41,13 @@ namespace SharesBrokerClient.Services
                 switch (httpStatus)
                 {
                     case HttpStatusCode.Forbidden:
-                        _connectionService.UpdateConnectionState(ConnectionState.Forbidden);
+                        await _connectionService.UpdateConnectionState(ConnectionState.Forbidden);
                         break;
                     case HttpStatusCode.Unauthorized:
-                        _connectionService.UpdateConnectionState(ConnectionState.Unauthorized);
+                        await _connectionService.UpdateConnectionState(ConnectionState.Unauthorized);
                         break;
                     default:
-                        _connectionService.UpdateConnectionState(ConnectionState.Error);
+                        await _connectionService.UpdateConnectionState(ConnectionState.Error);
                         break;
                 }
 

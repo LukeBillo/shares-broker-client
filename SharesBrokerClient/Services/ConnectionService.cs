@@ -1,4 +1,7 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
+using System.Reactive.Linq;
+using System.Reactive.Subjects;
 using System.Threading.Tasks;
 using Flurl.Http;
 using Microsoft.Extensions.Configuration;
@@ -11,17 +14,20 @@ namespace SharesBrokerClient.Services
     {
         public readonly string HealthEndpoint;
 
-        public User ConnectedUser { get; private set; }
-        public ConnectionState ConnectionState { get; private set; }
+        public IObservable<User> User => _user.AsObservable();
+
+        private readonly Subject<User> _user = new Subject<User>();
 
         public ConnectionService(IConfiguration configuration)
         {
             HealthEndpoint = $"{configuration["Urls:SharesWebService"]}/health";
-            ConnectionState = ConnectionState.NotConnected;
+            _user.OnNext(null);
         }
 
         public async Task<ConnectionState> Connect(string username, string password)
         {
+            var connectedUser = new User { Username = username, Password = password };
+
             try
             {
                 var response = await HealthEndpoint
@@ -29,35 +35,41 @@ namespace SharesBrokerClient.Services
                     .AllowHttpStatus(HttpStatusCode.Forbidden, HttpStatusCode.Unauthorized)
                     .GetAsync();
 
+
                 switch (response.StatusCode)
                 {
                     case HttpStatusCode.OK:
-                        ConnectedUser = new User { Username = username, Password = password };
-                        ConnectionState = ConnectionState.Connected;
+                        connectedUser.ConnectionState = ConnectionState.Connected;
                         break;
                     case HttpStatusCode.Forbidden:
-                        ConnectionState = ConnectionState.Forbidden;
+                        connectedUser.ConnectionState = ConnectionState.Forbidden;
                         break;
                     case HttpStatusCode.Unauthorized:
-                        ConnectionState = ConnectionState.Unauthorized;
+                        connectedUser.ConnectionState = ConnectionState.Unauthorized;
                         break;
                     default:
                         // should not be possible
-                        ConnectionState = ConnectionState.Error;
+                        connectedUser.ConnectionState = ConnectionState.Error;
                         break;
                 }
+
             }
             catch (FlurlHttpException)
             {
-                ConnectionState = ConnectionState.Error;
+                connectedUser.ConnectionState = ConnectionState.Error;
             }
 
-            return ConnectionState;
+            _user.OnNext(connectedUser);
+
+            return connectedUser.ConnectionState;
         }
 
-        public void UpdateConnectionState(ConnectionState state)
+        public async Task UpdateConnectionState(ConnectionState state)
         {
-            ConnectionState = state;
+            var connectedUser = await _user.FirstAsync();
+            connectedUser.ConnectionState = state;
+
+            _user.OnNext(connectedUser);
         }
     }
 }

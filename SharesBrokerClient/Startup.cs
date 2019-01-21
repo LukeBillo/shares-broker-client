@@ -59,12 +59,12 @@ namespace SharesBrokerClient
                     template: "{controller}/{action=Index}/{id?}");
             });
 
-            app.MapWhen(
-                context => !context.Request.Path.StartsWithSegments("/login"),
+            /*app.MapWhen(
+                context => context.Request.Path.StartsWithSegments("/api"),
                 config =>
                 {
                     config.UseMiddleware<BasicAuthMiddleware>();
-                });
+                });*/
 
             app.UseSpa(spa =>
             {

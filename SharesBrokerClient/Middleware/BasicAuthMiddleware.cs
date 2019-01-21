@@ -1,5 +1,6 @@
 using System;
 using System.Net;
+using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using SharesBrokerClient.Data;
@@ -10,6 +11,7 @@ namespace SharesBrokerClient.Middleware
     public class BasicAuthMiddleware
     {
         private readonly RequestDelegate _next;
+        private const int FiveMinutes = 5;
 
         public BasicAuthMiddleware(RequestDelegate next)
         {
@@ -22,7 +24,7 @@ namespace SharesBrokerClient.Middleware
 
             if (string.IsNullOrEmpty(authHeader) || !authHeader.StartsWith("Basic"))
             {
-                context.Response.Redirect("/login");
+                context.Response.StatusCode = (int) HttpStatusCode.Unauthorized;
                 return;
             }
 
@@ -34,10 +36,13 @@ namespace SharesBrokerClient.Middleware
             var username = decodedHeader[0];
             var password = decodedHeader[1];
 
-            if (connectionService.ConnectedUser != null)
+            var currentUser = await connectionService.User.FirstAsync();
+
+            if (currentUser != null)
             {
-                if (connectionService.ConnectedUser.Username == username &&
-                    connectionService.ConnectedUser.Password == password)
+                if (currentUser.Expiry <= DateTime.Now && 
+                    currentUser.Username == username &&
+                    currentUser.Password == password)
                 {
                     await _next.Invoke(context);
                 }
@@ -63,6 +68,8 @@ namespace SharesBrokerClient.Middleware
                         return;
                 }
             }
+
+            currentUser.Expiry = DateTime.Now.AddMinutes(FiveMinutes);
 
             await _next.Invoke(context);
         }
