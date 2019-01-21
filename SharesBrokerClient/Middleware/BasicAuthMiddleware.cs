@@ -4,6 +4,7 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using SharesBrokerClient.Data;
+using SharesBrokerClient.Data.Models;
 using SharesBrokerClient.Services;
 
 namespace SharesBrokerClient.Middleware
@@ -32,23 +33,18 @@ namespace SharesBrokerClient.Middleware
                 .Substring("Basic".Length)
                 .Trim();
 
-            var decodedHeader = Convert.FromBase64String(encodedUsernamePassword).ToString().Split(":");
-            var username = decodedHeader[0];
-            var password = decodedHeader[1];
-
-            var currentUser = await connectionService.User.FirstAsync();
+            var currentUser = connectionService.CurrentUser;
 
             if (currentUser != null)
             {
                 if (currentUser.Expiry <= DateTime.Now && 
-                    currentUser.Username == username &&
-                    currentUser.Password == password)
+                    currentUser.Credentials == encodedUsernamePassword)
                 {
                     await _next.Invoke(context);
                 }
             }
 
-            var connectionState = await connectionService.Connect(username, password);
+            var connectionState = await connectionService.Connect(encodedUsernamePassword);
 
             if (connectionState != ConnectionState.Connected)
             {
@@ -69,6 +65,7 @@ namespace SharesBrokerClient.Middleware
                 }
             }
 
+            currentUser = connectionService.CurrentUser;
             currentUser.Expiry = DateTime.Now.AddMinutes(FiveMinutes);
 
             await _next.Invoke(context);

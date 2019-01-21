@@ -1,13 +1,15 @@
-export interface User {
-    username: string;
-    authenticated: boolean;
-    shares: Share[];
-}
+import { Share } from './share.model';
 
-export interface Share {
-    companyName: string;
-    companySymbol: string;
-    numberOfShares: number;
-    currency: string;
-    value: number;
+export class User {
+    constructor(username: string, password: string) {
+        this.username = username;
+        this.password = password;
+        this.isAuthenticated = false;
+        this.shares = null;
+    }
+
+    username: string;
+    password: string;
+    isAuthenticated: boolean;
+    shares: Share[];
 }

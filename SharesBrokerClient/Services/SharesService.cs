@@ -29,7 +29,7 @@ namespace SharesBrokerClient.Services
             try
             {
                 var response = SharesEndpoint
-                    .WithBasicAuth(_user.Username, _user.Password)
+                    .WithHeader("Authorization", $"Basic {_user.Credentials}")
                     .GetJsonAsync<List<CompanyShare>>();
 
                 return response.Result;

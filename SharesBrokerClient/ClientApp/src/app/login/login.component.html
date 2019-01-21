@@ -1,0 +1,24 @@
+<h1>Login</h1>
+<form [formGroup]="loginForm" (ngSubmit)="login()">
+  <div class="form-group">
+    <label for="username">Username</label>
+        <input type="text" formControlName="username" class="form-control" [ngClass]="{ 'is-invalid': submitted && username.errors }" />
+
+  </div>
+  <div class="form-group">
+    <label for="password">Password</label>
+    <input type="password" formControlName="password" class="form-control" [ngClass]="{ 'is-invalid': submitted && password.errors }" />
+  </div>
+  <div class="form-group">
+    <button [disabled]="pending" class="btn btn-primary">Login</button>
+    <!-- todo? registration -->
+    <!-- <a [routerLink]="['/register']" class="btn btn-link">Register</a> -->
+  </div>
+  <div *ngIf="submitted && (username.errors || password.errors || errorMessage)" class="alert alert-danger">
+    <div *ngIf="username.errors" class="invalid-feedback">
+      <div *ngIf="username.errors.required">Username is required</div>
+      <div *ngIf="password.errors.required">Password is required</div>
+      <div *ngIf="errorMessage">{{ errorMessage }}</div>
+  </div>
+  </div>
+</form>

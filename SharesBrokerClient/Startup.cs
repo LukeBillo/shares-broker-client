@@ -1,5 +1,7 @@
+using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.Configuration;
@@ -30,7 +32,7 @@ namespace SharesBrokerClient
             });
 
             // DI
-            services.AddSingleton<IConfiguration>(Configuration);
+            services.AddSingleton(Configuration);
             services.AddSingleton<SharesService>();
             services.AddScoped<ConnectionService>();
         }
@@ -52,19 +54,15 @@ namespace SharesBrokerClient
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
 
-            app.UseMvc(routes =>
-            {
-                routes.MapRoute(
-                    name: "default",
-                    template: "{controller}/{action=Index}/{id?}");
-            });
-
-            /*app.MapWhen(
-                context => context.Request.Path.StartsWithSegments("/api"),
+            app.MapWhen(
+                context => context.Request.Path.StartsWithSegments(new PathString("/api"), StringComparison.OrdinalIgnoreCase),
                 config =>
                 {
                     config.UseMiddleware<BasicAuthMiddleware>();
-                });*/
+                    config.UseMvc();
+                });
+
+            app.UseMvc();
 
             app.UseSpa(spa =>
             {

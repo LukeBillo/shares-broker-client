@@ -15,23 +15,23 @@ namespace SharesBrokerClient.Services
         public readonly string HealthEndpoint;
 
         public IObservable<User> User => _user.AsObservable();
+        public User CurrentUser => _user.Value;
 
-        private readonly Subject<User> _user = new Subject<User>();
+        private readonly BehaviorSubject<User> _user = new BehaviorSubject<User>(null);
 
         public ConnectionService(IConfiguration configuration)
         {
             HealthEndpoint = $"{configuration["Urls:SharesWebService"]}/health";
-            _user.OnNext(null);
         }
 
-        public async Task<ConnectionState> Connect(string username, string password)
+        public async Task<ConnectionState> Connect(string credentials)
         {
-            var connectedUser = new User { Username = username, Password = password };
+            var connectedUser = new User { Credentials = credentials};
 
             try
             {
                 var response = await HealthEndpoint
-                    .WithBasicAuth(username, password)
+                    .WithHeader("Authorization", $"Basic {credentials}")
                     .AllowHttpStatus(HttpStatusCode.Forbidden, HttpStatusCode.Unauthorized)
                     .GetAsync();
 

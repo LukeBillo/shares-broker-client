@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using SharesBrokerClient.Data.Models;
 using SharesBrokerClient.Services;
@@ -10,7 +7,7 @@ using SharesBrokerClient.Services;
 
 namespace SharesBrokerClient.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/auth")]
     public class AuthController : Controller
     {
         private const int HalfAnHour = 30;
@@ -18,6 +15,7 @@ namespace SharesBrokerClient.Controllers
 
         public AuthController(ConnectionService connectionService)
         {
+            _user = connectionService.CurrentUser;
             connectionService.User.Subscribe(user => _user = user);
         }
 
