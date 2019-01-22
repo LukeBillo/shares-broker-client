@@ -24,15 +24,15 @@ namespace SharesBrokerClient.Services
             SharesEndpoint = $"{configuration["Urls:SharesWebService"]}/shares";
         }
 
-        public async Task<List<CompanyShare>> GetShares()
+        public async Task<List<CompanyShare>> GetShares(SharesQuery sharesQuery)
         {
             try
             {
                 var response = SharesEndpoint
                     .WithHeader("Authorization", $"Basic {_user.Credentials}")
-                    .GetJsonAsync<List<CompanyShare>>();
+                    .SetQueryParams(sharesQuery);
 
-                return response.Result;
+                return await response.GetJsonAsync<List<CompanyShare>>();
             }
             catch (FlurlHttpException flurlHttpException)
             {

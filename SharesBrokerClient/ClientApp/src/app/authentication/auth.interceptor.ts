@@ -10,11 +10,10 @@ export class BasicAuthInterceptor implements HttpInterceptor {
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const currentUser = this.authenticateService.user;
     if (currentUser != null) {
-      const encodedCredentials = btoa(`${currentUser.username}:${currentUser.password}`);
 
       request = request.clone({
         setHeaders: {
-          Authorization: `Basic ${encodedCredentials}`
+          Authorization: `Basic ${currentUser.credentials}`
         }
       });
     }

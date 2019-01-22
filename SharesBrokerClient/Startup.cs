@@ -33,7 +33,7 @@ namespace SharesBrokerClient
 
             // DI
             services.AddSingleton(Configuration);
-            services.AddSingleton<SharesService>();
+            services.AddScoped<SharesService>();
             services.AddScoped<ConnectionService>();
         }
 

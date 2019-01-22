@@ -2,14 +2,12 @@ import { Share } from './share.model';
 
 export class User {
     constructor(username: string, password: string) {
-        this.username = username;
-        this.password = password;
+        this.credentials = btoa(`${username}:${password}`);
         this.isAuthenticated = false;
         this.shares = null;
     }
 
-    username: string;
-    password: string;
+    credentials: string;
     isAuthenticated: boolean;
     shares: Share[];
 }

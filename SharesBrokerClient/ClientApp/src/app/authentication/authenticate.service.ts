@@ -4,7 +4,13 @@ import { map, catchError } from 'rxjs/operators';
 import { User } from '../shared/user.model';
 import { Observable, throwError } from 'rxjs';
 import { Router } from '@angular/router';
+import { Configuration } from '../shared/config';
 
+/**
+ * Authentication service; simply manages the SharesUser in
+ * local memory and storage.
+ * Auth headers added in BasicAuthInterceptor.
+ */
 @Injectable()
 export class AuthenticateService {
   public get user(): User {
@@ -14,22 +20,41 @@ export class AuthenticateService {
   private _user: User;
 
   private readonly authEndpoint = 'api/auth';
-  private readonly port = 5000;
 
   constructor(private http: HttpClient, private router: Router) {
     this._user = null;
   }
 
   login(username: string, password: string): Observable<User> {
-    if (this._user === null || this._user.username !== username) {
+    if (this._user === null) {
       this._user = new User(username, password);
     }
 
     return this.http.post(
-      `http://localhost:${this.port}/${this.authEndpoint}`,
+      `${Configuration.url}/${this.authEndpoint}`,
       {},
     ).pipe(map(_ => {
       this._user.isAuthenticated = true;
+      localStorage.setItem('SharesUser', this._user.credentials);
+      return this.user;
+    }));
+  }
+
+  reauth(credentials: string): Observable<User> {
+    if (this._user === null) {
+      this._user = {
+        credentials: credentials,
+        isAuthenticated: false,
+        shares: []
+      };
+    }
+
+    return this.http.post(
+      `${Configuration.url}/${this.authEndpoint}`,
+      {},
+    ).pipe(map(_ => {
+      this._user.isAuthenticated = true;
+      localStorage.setItem('SharesUser', this._user.credentials);
       return this.user;
     }));
   }
