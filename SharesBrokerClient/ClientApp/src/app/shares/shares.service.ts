@@ -19,4 +19,14 @@ export class SharesService {
       params: CreateHttpParams(sharesQuery),
     });
   }
+
+  buyShare(buyRequest: BuyShareRequest) {
+    return this.http.post(`${Configuration.url}/${this.sharesEndpoint}`, buyRequest);
+  }
+}
+
+export interface BuyShareRequest {
+  buyerUsername: string;
+  companySymbol: string;
+  numberOfSharesToBuy: number;
 }

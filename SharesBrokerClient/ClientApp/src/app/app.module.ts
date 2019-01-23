@@ -12,6 +12,13 @@ import { AuthenticateService } from './authentication/authenticate.service';
 import { AuthGuard } from './authentication/authenticate.guard';
 import { UnauthorizedInterceptor } from './authentication/unauthorized.interceptor';
 import { BasicAuthInterceptor } from './authentication/auth.interceptor';
+import { SharesService } from './shares/shares.service';
+import { UserSharesService } from './shares/user-shares.service';
+import { BuyShareComponent } from './buy-share/buy-share.component';
+import { SearchComponent } from './search/search.component';
+import { Ng5SliderModule } from 'ng5-slider';
+import { SelectDropDownModule } from 'ngx-select-dropdown';
+import { DisplaySharesComponent } from './display-shares/display-shares.component';
 
 @NgModule({
   declarations: [
@@ -19,6 +26,9 @@ import { BasicAuthInterceptor } from './authentication/auth.interceptor';
     NavMenuComponent,
     HomeComponent,
     LoginComponent,
+    BuyShareComponent,
+    SearchComponent,
+    DisplaySharesComponent,
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -27,11 +37,18 @@ import { BasicAuthInterceptor } from './authentication/auth.interceptor';
     ReactiveFormsModule,
     RouterModule.forRoot([
       { path: '', component: HomeComponent, pathMatch: 'full', canActivate: [AuthGuard] },
+      { path: 'buy', component: BuyShareComponent, pathMatch: 'full', canActivate: [AuthGuard] },
+      { path: 'search', component: SearchComponent, pathMatch: 'full', canActivate: [AuthGuard] },
+      { path: 'display', component: DisplaySharesComponent, pathMatch: 'full', canActivate: [AuthGuard] },
       { path: 'login', component: LoginComponent, pathMatch: 'full' }
-    ])
+    ]),
+    Ng5SliderModule,
+    SelectDropDownModule
   ],
   providers: [
     AuthenticateService,
+    SharesService,
+    UserSharesService,
     AuthGuard,
     { provide: HTTP_INTERCEPTORS, useClass: UnauthorizedInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: BasicAuthInterceptor, multi: true },

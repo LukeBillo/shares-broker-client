@@ -5,19 +5,19 @@
     </button>
   <div id="globalNavbar" class="collapse navbar-collapse">
     <ul class="navbar-nav ml-auto">
-      <li class="nav-item active">
-        <a class="nav-link" [routerLinkActive]='["active"]' [routerLink]='["/"]' [routerLinkActiveOptions]='{ exact: true }'>
-          <span class='glyphicon glyphicon-home'></span> Home
+      <li class="nav-item">
+        <a class="nav-link" [routerLink]='["/"]' [routerLinkActive]='["active"]' [routerLinkActiveOptions]="{exact: true}">
+          Home
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" [routerLinkActive]='["active"]' [routerLink]='["/counter"]'>
-          <span class='glyphicon glyphicon-education'></span> Counter
+        <a class="nav-link" [routerLinkActive]='["active"]' [routerLink]='["/buy"]'>
+          Buy
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" [routerLinkActive]='["active"]' [routerLink]='["/fetch-data"]'>
-          <span class='glyphicon glyphicon-th-list'></span> Fetch data
+        <a class="nav-link" [routerLinkActive]='["active"]' [routerLink]='["/search"]'>
+          Search
         </a>
       </li>
     </ul>

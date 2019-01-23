@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using SharesBrokerClient.Data;
 using SharesBrokerClient.Data.Models;
 using System;
+using Flurl.Util;
 
 namespace SharesBrokerClient.Services
 {
@@ -28,11 +29,10 @@ namespace SharesBrokerClient.Services
         {
             try
             {
-                var response = SharesEndpoint
+                return await SharesEndpoint
                     .WithHeader("Authorization", $"Basic {_user.Credentials}")
-                    .SetQueryParams(sharesQuery);
-
-                return await response.GetJsonAsync<List<CompanyShare>>();
+                    .SetQueryParams(sharesQuery)
+                    .GetJsonAsync<List<CompanyShare>>();
             }
             catch (FlurlHttpException flurlHttpException)
             {
@@ -53,6 +53,33 @@ namespace SharesBrokerClient.Services
 
                 // Empty list if errored
                 return new List<CompanyShare>();
+            }
+        }
+
+        public async Task BuyShare(BuyShareRequest request)
+        {
+            try
+            {
+                await SharesEndpoint
+                    .WithHeader("Authorization", $"Basic {_user.Credentials}")
+                    .PostJsonAsync(request);
+            }
+            catch (FlurlHttpException flurlHttpException)
+            {
+                var httpStatus = flurlHttpException.Call.HttpStatus;
+
+                switch (httpStatus)
+                {
+                    case HttpStatusCode.Forbidden:
+                        await _connectionService.UpdateConnectionState(ConnectionState.Forbidden);
+                        break;
+                    case HttpStatusCode.Unauthorized:
+                        await _connectionService.UpdateConnectionState(ConnectionState.Unauthorized);
+                        break;
+                    default:
+                        await _connectionService.UpdateConnectionState(ConnectionState.Error);
+                        break;
+                }
             }
         }
     }

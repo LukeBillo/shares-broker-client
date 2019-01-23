@@ -1,13 +1,14 @@
 <h1>Shares Market</h1>
+<h3>Your Shares Dashboard</h3>
 <div class="row my-2">
   <div class="col-sm-6">
     <div class="card h-100">
       <div class="card-body">
         <h5 class="card-title">Search Shares</h5>
-        <h6 class="card-subtitle">You can find an advanced search <a [routerLink]="['/search-']">here</a>.</h6>
+        <h6 class="card-subtitle">You can find an advanced search <a [routerLink]="['/search']">here</a>.</h6>
             <div class="input-group my-3">
                 <div class="input-group-prepend">
-                  <span class="input-group-text" id="basic-addon1">Company Name</span>
+                  <span class="input-group-text">Company Name</span>
                 </div>
                 <input type="text" class="form-control" placeholder="Search for a company by name..." [ngModel]="searchCompanyName" (ngModelChange)="search($event)">
                 <table class="table my-3" *ngIf="searchedShares">
@@ -38,7 +39,26 @@
     <div class="card h-100">
       <div class="card-body">
         <h5 class="card-title">Your Shares</h5>
-        <h6 class="card-subtitle">Total shares: 0 GBP</h6>
+        <h6 class="card-subtitle">Total shares: {{ ownedSharesTotal }} {{ user.preferences.currency }}</h6>
+        <table class="table my-3" *ngIf="ownedShares && ownedShares.length > 0; else noShares">
+          <thead>
+            <th scope="col">#</th>
+            <th scope="col">Company Symbol</th>
+            <th scope="col">Company Name</th>
+            <th scope="col">Shares Available</th>
+            <th scope="col">Price</th>
+            <th></th>
+          </thead>
+          <tbody>
+            <tr *ngFor="let share of ownedShares; let i = index;">
+              <td scope="col">{{ i + 1 }}</td>
+              <td>{{share.companySymbol}}</td>
+              <td>{{share.companyName}}</td>
+              <td>{{share.numberOfShares}}</td>
+              <td>{{share.sharePrice.value}} {{share.sharePrice.currency}}</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </div>
@@ -72,3 +92,6 @@
     </div>
   </div>
 </div>
+<ng-template #noShares>
+  <p class="mt-3 mb-2">You don't own any shares yet!</p>
+</ng-template>

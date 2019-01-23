@@ -16,17 +16,6 @@ namespace SharesBrokerClient.Controllers
             _sharesService = sharesService;
         }
 
-        /*@QueryParam("companySymbol") String companySymbol,
-            @QueryParam("companyName") String companyName,
-        @QueryParam("availableSharesLessThan") Integer availableSharedLessThan,
-            @QueryParam("availableSharesMoreThan") Integer availableSharesMoreThan,
-        @QueryParam("priceLessThan") Double priceLessThan,
-            @QueryParam("priceMoreThan") Double priceMoreThan,
-        @QueryParam("priceLastUpdatedBefore") Date priceLastUpdatedBefore,
-            @QueryParam("priceLastUpdatedAfter") Date priceLastUpdatedAfter,
-        @QueryParam("currency") String currency,
-            @QueryParam("limit") Integer limit*/
-
         [HttpGet]
         public async Task<IActionResult> Get(
             [FromQuery] string companySymbol,
@@ -56,6 +45,13 @@ namespace SharesBrokerClient.Controllers
 
             var shares = await _sharesService.GetShares(sharesQuery);
             return Ok(shares);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Post([FromBody] BuyShareRequest buyShareRequest)
+        {
+            await _sharesService.BuyShare(buyShareRequest);
+            return Ok();
         }
     }
 }

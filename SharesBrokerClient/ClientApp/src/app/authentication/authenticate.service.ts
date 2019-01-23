@@ -42,11 +42,7 @@ export class AuthenticateService {
 
   reauth(credentials: string): Observable<User> {
     if (this._user === null) {
-      this._user = {
-        credentials: credentials,
-        isAuthenticated: false,
-        shares: []
-      };
+      this._user = User.fromExistingCredentials(credentials);
     }
 
     return this.http.post(
