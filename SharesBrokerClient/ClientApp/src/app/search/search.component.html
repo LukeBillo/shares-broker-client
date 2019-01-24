@@ -1,0 +1,74 @@
+<h1>Advanced Search</h1>
+<p>Enter some information about what share(s) you are looking for below.</p>
+<form [formGroup]="searchForm" (ngSubmit)="search()">
+  <div class="form-group">
+    <div class="input-group my-2">
+      <div class="input-group-prepend">
+        <span class="input-group-text">Company Symbol</span>
+      </div>
+      <input type="text" formControlName="companySymbol" class="form-control" [ngClass]="{ 'is-invalid': submitted && companySymbol.errors }" />
+    </div>
+  </div>
+  <div class="form-group">
+    <div class="input-group my-2">
+      <div class="input-group-prepend">
+        <span class="input-group-text">Company Name</span>
+      </div>
+      <input type="text" formControlName="companyName" class="form-control" [ngClass]="{ 'is-invalid': submitted && companyName.errors }" />
+    </div>
+  </div>
+  <div class="form-group" style="max-width: 500px;">
+    <div class="input-group my-2">
+      <div class="input-group-prepend">
+        <span class="input-group-text">Currency</span>
+      </div>
+      <ngx-select-dropdown formControlName="currency" [config]="currencyDropdownConfig" [options]="currencies"></ngx-select-dropdown>
+    </div>
+  </div>
+  <div class="form-group">
+    <div class="input-group my-2">
+      <h4>Price Range</h4>
+      <div class="input-group mt-2 mb-4">
+        <div class="input-group-text mx-2">
+          <input class="" type="checkbox" [(ngModel)]="enablePriceRange" (ngModelChange)="enablePriceRangeChanged($event)"
+            [ngModelOptions]="{standalone: true}">
+        </div>
+        <label for="enablePriceRange">Enable Price Range</label>
+      </div>
+      <div class="col-sm-12 px-3">
+        <ng5-slider [(value)]="priceLowerValue" [(highValue)]="priceUpperValue" [options]="priceRangeSliderOptions"
+          formControlName="priceBetween" [disabled]="enablePriceRange"></ng5-slider>
+      </div>
+    </div>
+  </div>
+  <h4>Number of Shares Available</h4>
+  <div style="max-width: 250px;">
+    <div class="form-group">
+      <div class="input-group my-2">
+        <div class="input-group-prepend">
+          <span class="input-group-text">Less Than</span>
+        </div>
+        <input type="number" formControlName="lessThanSharesAvailable" class="form-control" [ngClass]="{ 'is-invalid': submitted && lessThanSharesAvailable.errors }" />
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="input-group my-2">
+        <div class="input-group-prepend">
+          <span class="input-group-text">More Than</span>
+        </div>
+        <input type="number" formControlName="moreThanSharesAvailable" class="form-control" [ngClass]="{ 'is-invalid': submitted && moreThanSharesAvailable.errors }" />
+      </div>
+    </div>
+  </div>
+  <div class="form-group">
+    <div class="input-group my-2">
+      <h4>Limit Number of Shares Returned</h4>
+      <div class="col-sm-12 px-3">
+        <ng5-slider [options]="limitSliderOptions" formControlName="limit" [disabled]="enablePriceRange"></ng5-slider>
+      </div>
+    </div>
+  </div>
+  <div class="form-group">
+    <button class="btn btn-primary my-3">Search</button>
+  </div>
+</form>

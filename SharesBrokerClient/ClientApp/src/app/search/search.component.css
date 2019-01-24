@@ -1,0 +1,7 @@
+ngx-select-dropdown {
+  width: 200px;
+}
+
+::ng-deep ngx-select-dropdown button {
+  height: 38px;
+}

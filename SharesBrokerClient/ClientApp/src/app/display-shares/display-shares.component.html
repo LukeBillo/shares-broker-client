@@ -1,0 +1,30 @@
+<h1>Search Results</h1>
+<div class="row">
+  <div class="col-sm-12">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">Showing Top {{ limit }} Share(s) Matching Search Criteria</h5>
+        <table class="table my-3" *ngIf="sharesFound">
+          <thead>
+            <th scope="col">#</th>
+            <th scope="col">Company Symbol</th>
+            <th scope="col">Company Name</th>
+            <th scope="col">Shares Available</th>
+            <th scope="col">Price</th>
+            <th></th>
+          </thead>
+          <tbody>
+            <tr *ngFor="let share of sharesFound; let i = index;">
+              <td scope="col">{{ i + 1 }}</td>
+              <td>{{share.companySymbol}}</td>
+              <td>{{share.companyName}}</td>
+              <td>{{share.numberOfShares}}</td>
+              <td>{{share.sharePrice.value}} {{share.sharePrice.currency}}</td>
+              <td><button class="btn btn-primary" [disabled]="share.numberOfShares <= 0" [routerLink]="['/buy']" [queryParams]="{share: share.companySymbol}">Buy</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
