@@ -22,7 +22,7 @@ export function CreateHttpParams(sharesQuery: Partial<SharesQuery>): HttpParams 
       const value = sharesQuery[key];
 
       if (value != null) {
-        params = params.set(key, value);
+        params = params.append(key, value);
       }
     }
   }

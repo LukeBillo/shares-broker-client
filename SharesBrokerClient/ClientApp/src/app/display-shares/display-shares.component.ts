@@ -19,8 +19,8 @@ export class DisplaySharesComponent implements OnInit {
   }
 
   constructor(private route: ActivatedRoute, private sharesService: SharesService) {
-    this.route.queryParamMap.subscribe(params => {
-      this.sharesQuery = params as Partial<SharesQuery>;
+    this.route.queryParamMap.subscribe((params: any) => {
+      this.sharesQuery = params.params as Partial<SharesQuery>;
 
       if (this.sharesQuery.limit) {
         this.limit = this.sharesQuery.limit;

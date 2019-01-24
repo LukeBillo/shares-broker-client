@@ -16,7 +16,7 @@ export class SharesService {
 
   getShares(sharesQuery: Partial<SharesQuery>): Observable<Share[]> {
     return this.http.get<Share[]>(`${Configuration.url}/${this.sharesEndpoint}`, {
-      params: CreateHttpParams(sharesQuery),
+      params: CreateHttpParams(sharesQuery)
     });
   }
 

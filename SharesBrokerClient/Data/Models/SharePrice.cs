@@ -6,6 +6,5 @@ namespace SharesBrokerClient.Data.Models
     {
         public string Currency { get; set; }
         public double Value { get; set; }
-        //public DateTime LastUpdated { get; set; }
     }
 }
